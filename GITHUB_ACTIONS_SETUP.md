@@ -75,7 +75,7 @@ https://guruarchtech.azurewebsites.net
 #### **4. FUNCAPP_CODE**
 
 ```
-5IyyW9isLIYHW0mwfvqbVxHm0VsRmSViVABU8HIHqSZDAzFu2IEBtQ==
+<SEU_CODIGO_AQUI>
 ```
 
 #### **5. AZURE_OPENAI_API_KEY**

@@ -46,7 +46,7 @@ func azure functionapp publish guruarchtech --build remote
 ### Requisição cURL
 
 ```bash
-curl -X POST "https://guruarchtech.azurewebsites.net/api/agent?code=5IyyW9isLIYHW0mwfvqbVxHm0VsRmSViVABU8HIHqSZDAzFu2IEBtQ==" \
+curl -X POST "https://guruarchtech.azurewebsites.net/api/agent?code=<SEU_CODIGO_AQUI>" \
   -H "Content-Type: application/json" \
   -d '{
     "problem": "Preciso de um chatbot de suporte ao cliente usando IA",

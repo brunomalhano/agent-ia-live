@@ -36,12 +36,12 @@
 URL Base: https://guruarchtech.azurewebsites.net/api/agent
 Método: POST
 Auth Level: function (requer code)
-Código da Função: 5IyyW9isLIYHW0mwfvqbVxHm0VsRmSViVABU8HIHqSZDAzFu2IEBtQ==
+Código da Função: <SEU_CODIGO_AQUI>
 ```
 
 ### Exemplo de Requisição
 ```bash
-curl -X POST "https://guruarchtech.azurewebsites.net/api/agent?code=5IyyW9isLIYHW0mwfvqbVxHm0VsRmSViVABU8HIHqSZDAzFu2IEBtQ==" \
+curl -X POST "https://guruarchtech.azurewebsites.net/api/agent?code=<SEU_CODIGO_AQUI>" \
   -H "Content-Type: application/json" \
   -d '{
     "problem": "Seu problema aqui",
@@ -76,7 +76,7 @@ func azure functionapp publish guruarchtech --build remote
 ### Passo 3: Validar Deployment
 ```bash
 # Testar a função
-curl -X POST "https://guruarchtech.azurewebsites.net/api/agent?code=5IyyW9isLIYHW0mwfvqbVxHm0VsRmSViVABU8HIHqSZDAzFu2IEBtQ==" \
+curl -X POST "https://guruarchtech.azurewebsites.net/api/agent?code=<SEU_CODIGO_AQUI>" \
   -H "Content-Type: application/json" \
   -d '{"problem": "Teste", "critic": false}'
 

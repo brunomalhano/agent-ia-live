@@ -26,7 +26,7 @@ No Azure, o arquivo `local.settings.json` NÃO é usado. Você precisa configura
 
 ```
 AZURE_OPENAI_API_KEY
-5EMF7QNEFDUQd74x4RCJAGNsoh0ihVNXbUjtK8wH2nhk2gB1F441JQQJ99BKACMsfrFXJ3w3AAAAACOGYwUM
+<SEU_VALOR_NO_GITHUB_SECRETS>
 
 AZURE_OPENAI_ENDPOINT
 https://genaihubmalhano.cognitiveservices.azure.com/
@@ -60,7 +60,7 @@ az functionapp config appsettings set \
   --name guruarchtech \
   --resource-group <SEU_RESOURCE_GROUP> \
   --settings \
-    AZURE_OPENAI_API_KEY="5EMF7QNEFDUQd74x4RCJAGNsoh0ihVNXbUjtK8wH2nhk2gB1F441JQQJ99BKACMsfrFXJ3w3AAAAACOGYwUM" \
+    AZURE_OPENAI_API_KEY="<SEU_VALOR_AQUI>" \
     AZURE_OPENAI_ENDPOINT="https://genaihubmalhano.cognitiveservices.azure.com/" \
     AZURE_OPENAI_API_VERSION="2024-12-01-preview" \
     AZURE_OPENAI_DEPLOYMENT="gpt-4.1"
@@ -85,7 +85,7 @@ az functionapp restart --name guruarchtech --resource-group <RESOURCE_GROUP>
 ## 🧪 Teste Após Configurar
 
 ```bash
-curl -X POST "https://guruarchtech.azurewebsites.net/api/agent?code=5IyyW9isLIYHW0mwfvqbVxHm0VsRmSViVABU8HIHqSZDAzFu2IEBtQ==" \
+curl -X POST "https://guruarchtech.azurewebsites.net/api/agent?code=<SEU_CODIGO_AQUI>" \
   -H "Content-Type: application/json" \
   -d '{"problem": "Teste", "critic": false}'
 ```

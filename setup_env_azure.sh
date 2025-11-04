@@ -24,7 +24,7 @@ echo "  Resource Group: $RESOURCE_GROUP"
 echo ""
 
 # Valores das variáveis
-API_KEY="5EMF7QNEFDUQd74x4RCJAGNsoh0ihVNXbUjtK8wH2nhk2gB1F441JQQJ99BKACMsfrFXJ3w3AAAAACOGYwUM"
+API_KEY="<SEU_VALOR_NO_GITHUB_SECRETS>"
 ENDPOINT="https://genaihubmalhano.cognitiveservices.azure.com/"
 API_VERSION="2024-12-01-preview"
 DEPLOYMENT="gpt-4.1"

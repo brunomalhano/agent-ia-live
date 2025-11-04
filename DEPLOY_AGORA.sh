@@ -43,7 +43,7 @@ echo "   curl -i -X OPTIONS 'https://guruarchtech.azurewebsites.net/api/agent' \
 echo "     -H 'Origin: https://portal.azure.com'"
 echo ""
 echo "2. Testar função:"
-echo "   curl -X POST 'https://guruarchtech.azurewebsites.net/api/agent?code=5IyyW9isLIYHW0mwfvqbVxHm0VsRmSViVABU8HIHqSZDAzFu2IEBtQ==' \\"
+echo "   curl -X POST 'https://guruarchtech.azurewebsites.net/api/agent?code=<SEU_CODIGO_AQUI>' \\"
 echo "     -H 'Content-Type: application/json' \\"
 echo "     -d '{\"problem\": \"Teste\", \"critic\": false}'"
 echo ""
