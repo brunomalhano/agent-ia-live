@@ -1,0 +1,145 @@
+name: Post-Deploy Validation
+
+on:
+  workflow_run:
+    workflows: ["Deploy Azure Function"]
+    types: [completed]
+  schedule:
+    - cron: '0 */6 * * *'  # A cada 6 horas
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Wait for Function startup
+        run: sleep 30
+      
+      - name: Health check
+        run: |
+          echo "🔍 Verificando saúde da função..."
+          curl -i -X OPTIONS "${{ secrets.FUNCAPP_URL }}/api/agent" \
+            -H "Origin: https://portal.azure.com" \
+            -w "\n"
+      
+      - name: Test with problem (with critic)
+        run: |
+          echo "🧪 Teste 1: Chatbot com crítica..."
+          RESPONSE=$(curl -s -X POST "${{ secrets.FUNCAPP_URL }}/api/agent?code=${{ secrets.FUNCAPP_CODE }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "problem": "Chatbot de suporte ao cliente usando IA",
+              "critic": true
+            }' \
+            -w "\n%{http_code}")
+          
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "✅ Teste 1: PASSOU (HTTP $HTTP_CODE)"
+          else
+            echo "❌ Teste 1: FALHOU (HTTP $HTTP_CODE)"
+            exit 1
+          fi
+      
+      - name: Test with problem (without critic)
+        run: |
+          echo "🧪 Teste 2: Arquitetura sem crítica..."
+          RESPONSE=$(curl -s -X POST "${{ secrets.FUNCAPP_URL }}/api/agent?code=${{ secrets.FUNCAPP_CODE }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "problem": "Arquitetura serverless para processar 100k eventos/min em tempo real",
+              "critic": false
+            }' \
+            -w "\n%{http_code}")
+          
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "✅ Teste 2: PASSOU (HTTP $HTTP_CODE)"
+          else
+            echo "❌ Teste 2: FALHOU (HTTP $HTTP_CODE)"
+            exit 1
+          fi
+      
+      - name: Test invalid request
+        run: |
+          echo "🧪 Teste 3: Validação de erro (problema muito curto)..."
+          RESPONSE=$(curl -s -X POST "${{ secrets.FUNCAPP_URL }}/api/agent?code=${{ secrets.FUNCAPP_CODE }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "problem": "abc",
+              "critic": false
+            }' \
+            -w "\n%{http_code}")
+          
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+          if [ "$HTTP_CODE" = "400" ]; then
+            echo "✅ Teste 3: PASSOU (validação funcionando, HTTP $HTTP_CODE)"
+          else
+            echo "⚠️  Teste 3: HTTP $HTTP_CODE (esperado 400)"
+          fi
+      
+      - name: Performance check
+        run: |
+          echo "⏱️  Verificando performance..."
+          START_TIME=$(date +%s%N)
+          
+          curl -s -X POST "${{ secrets.FUNCAPP_URL }}/api/agent?code=${{ secrets.FUNCAPP_CODE }}" \
+            -H "Content-Type: application/json" \
+            -d '{"problem": "Teste de performance", "critic": false}' \
+            > /dev/null
+          
+          END_TIME=$(date +%s%N)
+          DURATION=$((($END_TIME - $START_TIME) / 1000000))
+          
+          echo "Tempo de resposta: ${DURATION}ms"
+          if [ $DURATION -lt 60000 ]; then
+            echo "✅ Performance OK (< 60s)"
+          else
+            echo "⚠️  Performance lenta (> 60s)"
+          fi
+      
+      - name: Notify Slack - Validation Success
+        if: success()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          custom_payload: |
+            payload.attachments = [{
+              color: 'good',
+              text: '✅ Validation successful - guruarchtech',
+              fields: [{
+                title: 'Status',
+                value: 'All tests passed',
+                short: true
+              }, {
+                title: 'Time',
+                value: new Date().toLocaleString(),
+                short: true
+              }]
+            }]
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+        continue-on-error: true
+      
+      - name: Notify Slack - Validation Failed
+        if: failure()
+        uses: 8398a7/action-slack@v3
+        with:
+          status: custom
+          custom_payload: |
+            payload.attachments = [{
+              color: 'danger',
+              text: '❌ Validation failed - guruarchtech',
+              fields: [{
+                title: 'Check',
+                value: 'One or more tests failed',
+                short: false
+              }]
+            }]
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+        continue-on-error: true

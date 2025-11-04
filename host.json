@@ -1,0 +1,30 @@
+{
+  "version": "2.0",
+  "extensionBundle": {
+    "id": "Microsoft.Azure.Functions.ExtensionBundle",
+    "version": "[4.*, 5.0.0)"
+  },
+  "logging": {
+    "logLevel": {
+      "Host.Results": "Information",
+      "Function": "Information",
+      "Host.Aggregator": "Information"
+    },
+    "applicationInsights": {
+      "samplingExcludedTypes": "Request",
+      "samplingSettings": {
+        "isEnabled": true
+      }
+    }
+  },
+  "cors": {
+    "allowedOrigins": [
+      "https://portal.azure.com",
+      "https://localhost:3000",
+      "https://localhost:7071",
+      "http://localhost:3000",
+      "http://localhost:7071"
+    ],
+    "supportCredentials": false
+  }
+}
